@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="pt-PT"><head><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="build" content="v3"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ritual do Rosto · Descobre o teu perfil de cuidado</title>
 <meta name="description" content="Descobre o ritual certo para o teu rosto em 1 minuto. Quiz gratuito e plano de 21 dias de autocuidado.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -71,7 +71,7 @@ footer{text-align:center;font-size:12px;color:#8b726c;line-height:1.6;padding:24
 
 <section id="s-res" class="screen res">
 <div id="vslwrap" style="margin:8px 0 18px;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(120,70,60,.15)"><iframe id="vslframe" src="https://play.tynk.ai/p/ecdb41b7-ded6-46bc-b904-24307723f581" style="width: 100%; aspect-ratio: 16/9; border: 0; display: block;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-<div id="gated" class="gated">
+<div id="gated" class="gated" style="display:none" hidden>
 <div class="tag">O teu perfil de cuidado</div>
 <h1 id="pname"></h1>
 <img id="pimg" alt="">
@@ -107,7 +107,8 @@ footer{text-align:center;font-size:12px;color:#8b726c;line-height:1.6;padding:24
 <footer>Os resultados variam de pessoa para pessoa. Não substitui aconselhamento médico ou dermatológico.<br>
 <a href="https://www.livroreclamacoes.pt" target="_blank" rel="noopener">Livro de Reclamações</a> · © Ritual do Rosto</footer>
 </div>
-<script>
+<script>/* v3 */
+try{localStorage.removeItem('rr_reveal')}catch(e){}
 const Q=[
 {img:'q1-espelho',q:'O que reparas primeiro quando te olhas ao espelho de manhã?',o:[['😴','Olhos e rosto com ar cansado','A'],['💧','Rosto mais inchado do que gostava','A'],['🌙','O contorno do queixo e do pescoço','B'],['✨','Nada em especial, só quero manter-me bem','C']],m:'Boa! Já começámos a conhecer o teu rosto.'},
 {img:'q2-manha',q:'Como é a tua manhã típica?',o:[['☕','Café e a correr para a porta','A'],['🧴','Hidratante rápido e pouco mais','B'],['🌸','Tenho uma rotina de cuidados que gosto','C'],['👶','Primeiro tudo e todos, eu fico para o fim','A']],m:'Interessante… a tua manhã diz muito sobre o teu rosto.'},
@@ -136,7 +137,7 @@ go('s-res');armVsl();/* META PIXEL: fbq('track','CompleteRegistration',{content_
 
 /* Revelação da oferta: o player tynk não envia postMessage ao parent, por isso o timer de 156s começa no 1.º clique no iframe (blur + activeElement). Sem fallback: só começa depois do play. ?skip=1 revela já. */
 const RV=window.__REVEAL_MS||156000;let rvT=0,fbT=0;
-function reveal(){const g=$('gated');if(!g||g.classList.contains('vis'))return;g.style.display='block';requestAnimationFrame(()=>requestAnimationFrame(()=>g.classList.add('vis')));try{localStorage.setItem('rr_reveal','1')}catch(e){}clearTimeout(rvT);clearTimeout(fbT)}
-function armVsl(){if(new URLSearchParams(location.search).has('skip')||localStorage.getItem('rr_reveal')==='1'){reveal();return}
+function reveal(){const g=$('gated');if(!g||g.classList.contains('vis'))return;g.hidden=false;g.style.display='block';requestAnimationFrame(()=>requestAnimationFrame(()=>g.classList.add('vis')));clearTimeout(rvT);clearTimeout(fbT)}
+function armVsl(){if(new URLSearchParams(location.search).get('skip')==='1'){reveal();return}
 const f=$('vslframe');window.addEventListener('blur',()=>{setTimeout(()=>{if(document.activeElement===f&&!rvT)rvT=setTimeout(reveal,RV)},0)});}
 </script></body></html>
