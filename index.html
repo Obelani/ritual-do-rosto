@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-PT"><head><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="build" content="v3"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="pt-PT"><head><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="build" content="v4"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ritual do Rosto · Descobre o teu perfil de cuidado</title>
 <meta name="description" content="Descobre o ritual certo para o teu rosto em 1 minuto. Quiz gratuito e plano de 21 dias de autocuidado.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -45,6 +45,7 @@ img{max-width:100%;display:block;border-radius:18px}
 .price{text-align:center;margin:18px 0}.price small{display:block;color:#8b726c}.price strong{font-family:'Cormorant Garamond',serif;font-size:50px;color:var(--rose-d)}
 .guar{display:flex;gap:12px;align-items:center;margin-top:16px;font-size:14px;line-height:1.5}.guar span{font-size:34px}
 .gated{display:none;opacity:0;transition:opacity 1.2s ease}.gated.vis{opacity:1}
+.pulse{font-size:19px;padding:20px;margin:0 0 22px;background:linear-gradient(135deg,var(--rose-d),var(--rose) 60%,var(--gold));animation:pl 1.8s ease-in-out infinite}@keyframes pl{0%,100%{transform:scale(1);box-shadow:0 10px 24px rgba(168,100,106,.35)}50%{transform:scale(1.04);box-shadow:0 14px 34px rgba(184,149,90,.55)}}@media(prefers-reduced-motion:reduce){.pulse{animation:none}}
 footer{text-align:center;font-size:12px;color:#8b726c;line-height:1.6;padding:24px 10px}footer a{color:var(--rose-d)}
 @media(min-width:900px){.wrap{max-width:620px;padding-top:40px}}
 </style></head><body>
@@ -72,6 +73,9 @@ footer{text-align:center;font-size:12px;color:#8b726c;line-height:1.6;padding:24
 <section id="s-res" class="screen res">
 <div id="vslwrap" style="margin:8px 0 18px;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(120,70,60,.15)"><iframe id="vslframe" src="https://play.tynk.ai/p/ecdb41b7-ded6-46bc-b904-24307723f581" style="width: 100%; aspect-ratio: 16/9; border: 0; display: block;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
 <div id="gated" class="gated" style="display:none" hidden>
+<!-- TROCAR PELO LINK DO CHECKOUT -->
+<a class="btn cta pulse" id="cta-top" href="#checkout">Quero começar o meu ritual</a>
+
 <div class="tag">O teu perfil de cuidado</div>
 <h1 id="pname"></h1>
 <img id="pimg" alt="">
@@ -107,7 +111,7 @@ footer{text-align:center;font-size:12px;color:#8b726c;line-height:1.6;padding:24
 <footer>Os resultados variam de pessoa para pessoa. Não substitui aconselhamento médico ou dermatológico.<br>
 <a href="https://www.livroreclamacoes.pt" target="_blank" rel="noopener">Livro de Reclamações</a> · © Ritual do Rosto</footer>
 </div>
-<script>/* v3 */
+<script>/* v4 */
 try{localStorage.removeItem('rr_reveal')}catch(e){}
 const Q=[
 {img:'q1-espelho',q:'O que reparas primeiro quando te olhas ao espelho de manhã?',o:[['😴','Olhos e rosto com ar cansado','A'],['💧','Rosto mais inchado do que gostava','A'],['🌙','O contorno do queixo e do pescoço','B'],['✨','Nada em especial, só quero manter-me bem','C']],m:'Boa! Já começámos a conhecer o teu rosto.'},
