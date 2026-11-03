@@ -44,6 +44,7 @@ img{max-width:100%;display:block;border-radius:18px}
 .offer ul{list-style:none;margin:12px 0}.offer li{padding:7px 0;border-bottom:1px dashed #e6cbb9}.offer li:before{content:'✦ ';color:var(--gold)}
 .price{text-align:center;margin:18px 0}.price small{display:block;color:#8b726c}.price strong{font-family:'Cormorant Garamond',serif;font-size:50px;color:var(--rose-d)}
 .guar{display:flex;gap:12px;align-items:center;margin-top:16px;font-size:14px;line-height:1.5}.guar span{font-size:34px}
+.gated{display:none;opacity:0;transition:opacity 1.2s ease}.gated.vis{opacity:1}
 footer{text-align:center;font-size:12px;color:#8b726c;line-height:1.6;padding:24px 10px}footer a{color:var(--rose-d)}
 @media(min-width:900px){.wrap{max-width:620px;padding-top:40px}}
 </style></head><body>
@@ -85,7 +86,8 @@ footer{text-align:center;font-size:12px;color:#8b726c;line-height:1.6;padding:24
 55–68s OFERTA | Mockup + bónus a entrar | "Levas também a Massagem Desinchar Express, o guia Gua Sha, a rotina do pescoço, a checklist e o planner. Tudo por 9,90€, com 7 dias de garantia."
 68–75s CTA | Mulher sorri ao espelho, botão | "Os minutos ao espelho já são teus. Transforma-os no teu ritual. Carrega no botão abaixo."
 -->
-<div class="vsl" id="vsl"><b>▶</b>Vídeo em breve</div>
+<div id="vslwrap" style="margin:18px 0;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(120,70,60,.15)"><iframe id="vslframe" src="https://play.tynk.ai/p/ecdb41b7-ded6-46bc-b904-24307723f581" style="width: 100%; aspect-ratio: 16/9; border: 0; display: block;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+<div id="gated" class="gated">
 
 <div class="box offer" id="offer">
 <h3>O teu Ritual do Rosto está pronto.</h3>
@@ -98,6 +100,7 @@ footer{text-align:center;font-size:12px;color:#8b726c;line-height:1.6;padding:24
 </div>
 <!-- TROCAR PELO LINK DO CHECKOUT -->
 <a class="btn cta" href="#checkout">Quero o meu Ritual por 9,90€</a>
+</div>
 </section>
 
 <footer>Os resultados variam de pessoa para pessoa. Não substitui aconselhamento médico ou dermatológico.<br>
@@ -128,5 +131,12 @@ function result(){const c={A:0,B:0,C:0};ans.forEach((k,n)=>c[Q[n].o[k][2]]++);le
 if(A>B&&A>C)r='A';else if(B>A&&B>C)r='B';else if(C>A&&C>B)r='C';else if(A===B)r='A';else if(B===C)r='B';else r='C';
 const p=P[r],t=n=>{const o=Q[n-1].o[ans[n-1]];return o[1].toLowerCase()};
 $('pname').textContent=p.n;$('pimg').src='img/'+p.img+'.webp';$('pimg').alt='Perfil '+p.n;$('pconf').textContent=p.c.replace(/\{(\d)\}/g,(_,n)=>t(+n));$('pdesc').textContent=p.d;$('pplan').innerHTML=p.p.map(x=>'<li>'+x+'</li>').join('');
-go('s-res');/* META PIXEL: fbq('track','CompleteRegistration',{content_name:p.n}); */}
+go('s-res');armVsl();/* META PIXEL: fbq('track','CompleteRegistration',{content_name:p.n}); */}
+
+/* Revelação da oferta: o player tynk não envia postMessage ao parent, por isso o timer de 156s começa no 1.º clique no iframe (blur + activeElement). Fallback: 186s após o vídeo ficar visível. ?skip=1 revela já. */
+const RV=window.__REVEAL_MS||156000,FB=window.__FALLBACK_MS||186000;let rvT=0,fbT=0;
+function reveal(){const g=$('gated');if(!g||g.classList.contains('vis'))return;g.style.display='block';requestAnimationFrame(()=>requestAnimationFrame(()=>g.classList.add('vis')));try{localStorage.setItem('rr_reveal','1')}catch(e){}clearTimeout(rvT);clearTimeout(fbT)}
+function armVsl(){if(new URLSearchParams(location.search).has('skip')||localStorage.getItem('rr_reveal')==='1'){reveal();return}
+if(!fbT)fbT=setTimeout(reveal,FB);
+const f=$('vslframe');window.addEventListener('blur',()=>{setTimeout(()=>{if(document.activeElement===f&&!rvT)rvT=setTimeout(reveal,RV)},0)});}
 </script></body></html>
