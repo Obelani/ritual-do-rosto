@@ -70,6 +70,8 @@ footer{text-align:center;font-size:12px;color:#8b726c;line-height:1.6;padding:24
 </section>
 
 <section id="s-res" class="screen res">
+<div id="vslwrap" style="margin:8px 0 18px;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(120,70,60,.15)"><iframe id="vslframe" src="https://play.tynk.ai/p/ecdb41b7-ded6-46bc-b904-24307723f581" style="width: 100%; aspect-ratio: 16/9; border: 0; display: block;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+<div id="gated" class="gated">
 <div class="tag">O teu perfil de cuidado</div>
 <h1 id="pname"></h1>
 <img id="pimg" alt="">
@@ -86,8 +88,7 @@ footer{text-align:center;font-size:12px;color:#8b726c;line-height:1.6;padding:24
 55–68s OFERTA | Mockup + bónus a entrar | "Levas também a Massagem Desinchar Express, o guia Gua Sha, a rotina do pescoço, a checklist e o planner. Tudo por 9,90€, com 7 dias de garantia."
 68–75s CTA | Mulher sorri ao espelho, botão | "Os minutos ao espelho já são teus. Transforma-os no teu ritual. Carrega no botão abaixo."
 -->
-<div id="vslwrap" style="margin:18px 0;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(120,70,60,.15)"><iframe id="vslframe" src="https://play.tynk.ai/p/ecdb41b7-ded6-46bc-b904-24307723f581" style="width: 100%; aspect-ratio: 16/9; border: 0; display: block;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-<div id="gated" class="gated">
+
 
 <div class="box offer" id="offer">
 <h3>O teu Ritual do Rosto está pronto.</h3>
@@ -112,7 +113,7 @@ const Q=[
 {img:'q2-manha',q:'Como é a tua manhã típica?',o:[['☕','Café e a correr para a porta','A'],['🧴','Hidratante rápido e pouco mais','B'],['🌸','Tenho uma rotina de cuidados que gosto','C'],['👶','Primeiro tudo e todos, eu fico para o fim','A']],m:'Interessante… a tua manhã diz muito sobre o teu rosto.'},
 {img:'q3-tempo',q:'Quantos minutos passas ao espelho por dia?',o:[['⏱️','Menos de 5','A'],['🪞','5 a 10','B'],['💄','Mais de 10','C'],['🤷','Nunca contei','A']],m:'Sabias que esses minutos podem virar um ritual? Já te mostramos como.'},
 {icon:'📷',q:'Como te sentes quando vês fotos tuas tiradas por outra pessoa?',o:[['📸','Gosto, sinto-me bem','C'],['😐','Depende do ângulo','B'],['🙈','Evito aparecer de perfil','B'],['😔','Muitas vezes não me reconheço','A']],m:'Obrigada pela sinceridade. Estás a meio caminho.'},
-{icon:'💗',grid:1,q:'O que mais te incomoda hoje?',o:[['q5-pes-galinha','Pés de galinha','A','rugas no canto dos olhos','os pés de galinha'],['q5-bigode-chines','Bigode chinês','B','rugas do nariz à boca','o bigode chinês'],['q5-testa','Rugas na testa','C','linhas na testa','as rugas na testa'],['q5-tudo','Um pouco de tudo','B','olhos, testa e boca','um pouco de tudo']],m:'Faz todo o sentido. Muitas mulheres sentem o mesmo.'},
+{icon:'💗',grid:1,q:'O que mais te incomoda hoje?',o:[['q5-foto-pes-galinha','Pés de galinha','A','rugas no canto dos olhos','os pés de galinha'],['q5-foto-bigode-chines','Bigode chinês','B','rugas do nariz à boca','o bigode chinês'],['q5-foto-testa','Rugas na testa','C','linhas na testa','as rugas na testa'],['q5-foto-tudo','Um pouco de tudo','B','olhos, testa e boca','um pouco de tudo']],m:'Faz todo o sentido. Muitas mulheres sentem o mesmo.'},
 {icon:'🧴',q:'O que já experimentaste?',o:[['🧴','Cremes e séruns caros','B'],['💉','Pensei em procedimentos, mas tenho receio','B'],['📱','Vídeos soltos na internet, sem constância','A'],['🌱','Ainda nada, quero começar com o pé direito','C']],m:'Quase lá. O teu perfil está a ganhar forma.'},
 {icon:'⏰',q:'Quanto tempo podes dedicar por dia?',o:[['⚡','5 a 10 minutos','A'],['🕙','10 a 15 minutos','B'],['🧘','15 minutos ou mais','C']],m:'Perfeito, o ritual adapta-se ao teu tempo.'},
 {icon:'⭐',q:'O que mais queres sentir daqui a 21 dias?',o:[['🌅','Acordar com um rosto mais descansado','A'],['💎','Sentir o rosto com aspeto mais firme','B'],['🌿','Ter um hábito de autocuidado que é meu','C'],['🪞','Gostar mais do que vejo ao espelho','B']],m:'Feito! A preparar o teu perfil de cuidado…'}];
@@ -123,7 +124,7 @@ let i=0,ans=[];const $=id=>document.getElementById(id);
 function go(id){document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('show','on')});const s=$(id);s.classList.add('on');requestAnimationFrame(()=>requestAnimationFrame(()=>s.classList.add('show')));scrollTo({top:0,behavior:'smooth'})}
 function start(){i=0;ans=[];go('s-q');render()}
 function render(){const q=Q[i];$('bar').style.width=(i/Q.length*100)+'%';$('count').textContent=(i+1)+'/'+Q.length;$('back').hidden=false;$('micro').textContent=i?Q[i-1].m:'';
-const b=$('qbody');b.style.opacity=0;setTimeout(()=>{b.innerHTML=(q.img?`<img class="qimg" src="img/${q.img}.webp" alt="">`:`<div class="qicon">${q.icon}</div>`)+`<h2>${q.q}</h2>`+(q.grid?'<div class="grid">':'')+q.o.map((o,k)=>`<button class="opt${ans[i]===k?' sel':''}" onclick="pick(${k},this)">${q.grid?`<img src="img/${o[0]}.webp" alt="${o[1]}" loading="lazy"><div><b>${o[1]}</b><small>${o[3]}</small></div>`:`<span>${o[0]}</span>${o[1]}`}</button>`).join('')+(q.grid?'</div>':'');b.style.transition='opacity .35s';b.style.opacity=1},150)}
+const b=$('qbody');b.style.opacity=0;setTimeout(()=>{b.innerHTML=(q.img?`<img class="qimg" src="img/${q.img}.webp" alt="">`:`<div class="qicon">${q.icon}</div>`)+`<h2>${q.q}</h2>`+(q.grid?'<div class="grid">':'')+q.o.map((o,k)=>`<button class="opt${ans[i]===k?' sel':''}" onclick="pick(${k},this)">${q.grid?`<img src="img/${o[0]}.webp?v=2" alt="${o[1]}" loading="lazy"><div><b>${o[1]}</b><small>${o[3]}</small></div>`:`<span>${o[0]}</span>${o[1]}`}</button>`).join('')+(q.grid?'</div>':'');b.style.transition='opacity .35s';b.style.opacity=1},150)}
 function pick(k,el){ans[i]=k;el.classList.add('sel');$('bar').style.width=((i+1)/Q.length*100)+'%';setTimeout(()=>{if(++i<Q.length)render();else load()},380)}
 function back(){if(i>0){i--;render()}else go('s-start')}
 function load(){$('micro').textContent=Q[7].m;go('s-load');const li=$('steps').children;[...li].forEach(l=>l.classList.remove('ok'));[0,1,2].forEach(n=>setTimeout(()=>li[n].classList.add('ok'),600+n*800));setTimeout(result,3200)}
@@ -133,10 +134,9 @@ const p=P[r],t=n=>{const o=Q[n-1].o[ans[n-1]];return o[1].toLowerCase()};
 $('pname').textContent=p.n;$('pimg').src='img/'+p.img+'.webp';$('pimg').alt='Perfil '+p.n;$('pconf').textContent=p.c.replace(/\{(\d)\}/g,(_,n)=>t(+n));$('pdesc').textContent=p.d;$('pplan').innerHTML=p.p.map(x=>'<li>'+x+'</li>').join('');
 go('s-res');armVsl();/* META PIXEL: fbq('track','CompleteRegistration',{content_name:p.n}); */}
 
-/* Revelação da oferta: o player tynk não envia postMessage ao parent, por isso o timer de 156s começa no 1.º clique no iframe (blur + activeElement). Fallback: 186s após o vídeo ficar visível. ?skip=1 revela já. */
-const RV=window.__REVEAL_MS||156000,FB=window.__FALLBACK_MS||186000;let rvT=0,fbT=0;
+/* Revelação da oferta: o player tynk não envia postMessage ao parent, por isso o timer de 156s começa no 1.º clique no iframe (blur + activeElement). Sem fallback: só começa depois do play. ?skip=1 revela já. */
+const RV=window.__REVEAL_MS||156000;let rvT=0,fbT=0;
 function reveal(){const g=$('gated');if(!g||g.classList.contains('vis'))return;g.style.display='block';requestAnimationFrame(()=>requestAnimationFrame(()=>g.classList.add('vis')));try{localStorage.setItem('rr_reveal','1')}catch(e){}clearTimeout(rvT);clearTimeout(fbT)}
 function armVsl(){if(new URLSearchParams(location.search).has('skip')||localStorage.getItem('rr_reveal')==='1'){reveal();return}
-if(!fbT)fbT=setTimeout(reveal,FB);
 const f=$('vslframe');window.addEventListener('blur',()=>{setTimeout(()=>{if(document.activeElement===f&&!rvT)rvT=setTimeout(reveal,RV)},0)});}
 </script></body></html>
