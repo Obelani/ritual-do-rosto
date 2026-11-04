@@ -146,8 +146,8 @@ go('s-res');armVsl();/* META PIXEL: fbq('track','CompleteRegistration',{content_
 /* Revelação da oferta: o player tynk não envia postMessage ao parent, por isso o timer de 156s começa no 1.º clique no iframe (blur + activeElement). Sem fallback: só começa depois do play. ?skip=1 revela já. */
 const RV=window.__REVEAL_MS||156000;let rvT=0,fbT=0;
 function reveal(){const g=$('gated');if(!g||g.classList.contains('vis'))return;g.hidden=false;g.style.display='block';void g.offsetWidth;setTimeout(()=>g.classList.add('vis'),30);clearTimeout(rvT);clearTimeout(fbT)}
-/* TESTE: com true o botão e o resto aparecem logo, sem esperar o timer. Pôr false para repor o timer de 156 s. */
-const TESTE_SEM_TIMER=true;
+/* Timer ativo: o botão e o resto aparecem 156 s depois do play. Para testar sem esperar, pôr true (ou abrir com ?skip=1). */
+const TESTE_SEM_TIMER=false;
 function armVsl(){if(TESTE_SEM_TIMER||new URLSearchParams(location.search).get('skip')==='1'){reveal();return}
 const f=$('vslframe');window.addEventListener('blur',()=>{setTimeout(()=>{if(document.activeElement===f&&!rvT)rvT=setTimeout(reveal,RV)},0)});}
 </script></body></html>
