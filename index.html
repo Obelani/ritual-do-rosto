@@ -135,9 +135,9 @@ let i=0,ans=[];const $=id=>document.getElementById(id);
 const tk=(n,p)=>{try{window.sentinel&&window.sentinel('track',n,p)}catch(e){}};
 /* Contagem simples por página do quiz, para o relatório em /relatorio/ (pessoas únicas por navegador).
    Não envia dados pessoais: só incrementa um contador por etapa. Sem contagem em localhost nem com ?teste=1. */
-const RR_NS=(location.search.match(/[?&]ns=([\w-]+)/)||[])[1]||'rr-13ececb554c1';
+const RR_NS=(location.search.match(/[?&]ns=([\w-]+)/)||[])[1]||'rr-e3533fe18887';
 const RR_MAP={quiz_inicio:'p02',quiz_resultado:'p11',vsl_play:'p12',oferta_revelada:'p13'};for(let n=1;n<=8;n++)RR_MAP['quiz_pergunta_'+n]='p'+String(n+2).padStart(2,'0');
-const cont=k=>{try{if(!k||/[?&]teste=1/.test(location.search))return;if(location.hostname==='localhost'&&!/[?&]contar=1/.test(location.search))return;const c='rrc_'+k;if(localStorage.getItem(c))return;localStorage.setItem(c,'1');new Image().src='https://abacus.jasoncameron.dev/hit/'+RR_NS+'/'+k}catch(e){}};
+const cont=k=>{try{if(!k||navigator.webdriver||/bot|crawl|spider|headless|lighthouse|preview/i.test(navigator.userAgent)||/[?&]teste=1/.test(location.search))return;if(location.hostname==='localhost'&&!/[?&]contar=1/.test(location.search))return;const c='rrc_'+k;if(localStorage.getItem(c))return;localStorage.setItem(c,'1');new Image().src='https://abacus.jasoncameron.dev/hit/'+RR_NS+'/'+k}catch(e){}};
 const vistoTk={};const tkU=(n,p)=>{if(vistoTk[n])return;vistoTk[n]=1;tk(n,p);cont(RR_MAP[n])};
 cont('p01');document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('a.cta'))cont('p14')},true);
 function go(id){document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('show','on')});const s=$(id);s.classList.add('on');requestAnimationFrame(()=>requestAnimationFrame(()=>s.classList.add('show')));scrollTo({top:0,behavior:'smooth'})}
