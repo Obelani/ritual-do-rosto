@@ -153,10 +153,10 @@ const p=P[r],t=n=>{const o=Q[n-1].o[ans[n-1]];return o[1].toLowerCase()};
 $('pname').textContent=p.n;$('pimg').src='img/'+p.img+'.webp';$('pimg').alt='Perfil '+p.n;$('pconf').textContent=p.c.replace(/\{(\d)\}/g,(_,n)=>t(+n));$('pdesc').textContent=p.d;$('pplan').innerHTML=p.p.map(x=>'<li>'+x+'</li>').join('');
 tkU('quiz_resultado',{perfil:r});go('s-res');armVsl();/* META PIXEL: fbq('track','CompleteRegistration',{content_name:p.n}); */}
 
-/* Revelação da oferta: o player tynk não envia postMessage ao parent, por isso o timer de 146s começa no 1.º clique no iframe (blur + activeElement). Sem fallback: só começa depois do play. ?skip=1 revela já. */
-const RV=window.__REVEAL_MS||146000;let rvT=0,fbT=0;
+/* Revelação da oferta: o player tynk não envia postMessage ao parent, por isso o timer de 141s começa no 1.º clique no iframe (blur + activeElement). Sem fallback: só começa depois do play. ?skip=1 revela já. */
+const RV=window.__REVEAL_MS||141000;let rvT=0,fbT=0;
 function reveal(){const g=$('gated');if(!g||g.classList.contains('vis'))return;tkU('oferta_revelada');g.hidden=false;g.style.display='block';void g.offsetWidth;setTimeout(()=>g.classList.add('vis'),30);clearTimeout(rvT);clearTimeout(fbT)}
-/* Timer ativo: o botão e o resto aparecem 146 s depois do play. Para testar sem esperar, pôr true (ou abrir com ?skip=1). */
+/* Timer ativo: o botão e o resto aparecem 141 s depois do play. Para testar sem esperar, pôr true (ou abrir com ?skip=1). */
 const TESTE_SEM_TIMER=false;
 function armVsl(){if(TESTE_SEM_TIMER||new URLSearchParams(location.search).get('skip')==='1'){reveal();return}
 const f=$('vslframe');window.addEventListener('blur',()=>{setTimeout(()=>{if(document.activeElement===f&&!rvT){tkU('vsl_play');rvT=setTimeout(reveal,RV)}},0)});}
