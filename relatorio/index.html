@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Relatório do quiz · Ritual do Rosto</title>
+<style>
+:root{--bg:#12161c;--card:#1a2029;--linha:#2b3441;--tx:#f4f6f8;--suave:#b4bdc8;--ok:#1d8f4e;--mau:#e5254f;--ouro:#ffb703}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 "Segoe UI",system-ui,sans-serif;padding:24px 16px 60px}
+.w{max-width:860px;margin:0 auto}
+h1{font-size:1.5rem;margin:0 0 4px}
+.sub{color:var(--suave);margin:0 0 18px;font-size:.95rem}
+.topo{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:16px}
+button{background:var(--ouro);color:#1b1400;border:0;border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer}
+.resumo{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.res{background:var(--card);border:1px solid var(--linha);border-radius:12px;padding:12px 14px}
+.res b{display:block;font-size:1.6rem}
+.res span{color:var(--suave);font-size:.85rem}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--linha);border-radius:12px;overflow:hidden}
+th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--linha);white-space:nowrap}
+th:first-child,td:first-child{text-align:left;white-space:normal}
+th{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--suave);background:#161b23}
+tr:last-child td{border-bottom:0}
+.barra{height:6px;background:var(--linha);border-radius:99px;margin-top:6px;overflow:hidden}
+.barra i{display:block;height:100%;background:var(--ok)}
+.perda{font-weight:700}
+.pior{color:var(--mau)}
+.pior-linha td{background:rgba(229,37,79,.10)}
+.nota{color:var(--suave);font-size:.85rem;margin-top:14px}
+.erro{color:var(--mau)}
+@media(max-width:560px){th,td{padding:8px 8px;font-size:.9rem}.resumo{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="w">
+<div class="topo">
+  <div><h1>Relatório do quiz</h1><p class="sub" id="sub">A carregar…</p></div>
+  <button type="button" id="atualizar">Atualizar</button>
+</div>
+<div class="resumo" id="resumo"></div>
+<table>
+<thead><tr><th>Página</th><th>Pessoas</th><th>Passaram</th><th>Perda</th></tr></thead>
+<tbody id="corpo"></tbody>
+</table>
+<p class="nota">Cada pessoa conta uma vez por página (por navegador). «Passaram» é a percentagem das que chegaram à página anterior e também chegaram a esta; «Perda» é o contrário. A contagem começa na data em que este relatório foi ligado e não inclui testes feitos com <b>?teste=1</b> no endereço da página.</p>
+<p class="nota erro" id="erro" hidden></p>
+</div>
+<script>
+var NS=(location.search.match(/[?&]ns=([\w-]+)/)||[])[1]||'rr-13ececb554c1';
+var PAGINAS=[
+ ['p01','Página 1 — Abertura (viu a página)'],
+ ['p02','Página 2 — Começou o quiz'],
+ ['p03','Página 3 — Pergunta 1'],
+ ['p04','Página 4 — Pergunta 2'],
+ ['p05','Página 5 — Pergunta 3'],
+ ['p06','Página 6 — Pergunta 4'],
+ ['p07','Página 7 — Pergunta 5'],
+ ['p08','Página 8 — Pergunta 6'],
+ ['p09','Página 9 — Pergunta 7'],
+ ['p10','Página 10 — Pergunta 8'],
+ ['p11','Página 11 — Resultado'],
+ ['p12','Página 12 — Carregou no vídeo'],
+ ['p13','Página 13 — Viu a oferta (botão)'],
+ ['p14','Página 14 — Clicou em comprar']
+];
+function esperar(ms){return new Promise(function(r){setTimeout(r,ms)})}
+/* 404 = ainda ninguém chegou a esta página (0). Qualquer outro erro (limite de pedidos, rede) volta a tentar. */
+function pedir(k,t){
+  t=t||0;
+  return fetch('https://abacus.jasoncameron.dev/get/'+NS+'/'+k).then(function(r){
+    if(r.status===404) return 0;
+    if(!r.ok) throw new Error('http '+r.status);
+    return r.json().then(function(j){return j.value||0});
+  }).catch(function(e){
+    if(t>=4) throw e;
+    return esperar(1200*(t+1)).then(function(){return pedir(k,t+1)});
+  });
+}
+/* pedidos em fila, com pequena pausa, para não passar o limite do serviço */
+function pedirTodos(){
+  var res=[],p=Promise.resolve();
+  PAGINAS.forEach(function(x,i){p=p.then(function(){return pedir(x[0]).then(function(v){res[i]=v;return esperar(150)})})});
+  return p.then(function(){return res});
+}
+function pc(n){return (Math.round(n*10)/10).toLocaleString('pt-PT',{minimumFractionDigits:1,maximumFractionDigits:1})+'%'}
+function carregar(){
+  document.getElementById('sub').textContent='A carregar…';
+  document.getElementById('erro').hidden=true;
+  pedirTodos().then(function(v){
+    var topo=v[0]||0, corpo=document.getElementById('corpo'), html='', pior=-1, piorI=-1, i, perda;
+    for(i=1;i<v.length;i++){ if(v[i-1]>0){ perda=1-v[i]/v[i-1]; if(perda>pior){pior=perda;piorI=i} } }
+    for(i=0;i<v.length;i++){
+      var passou=i&&v[i-1]>0?pc(Math.min(100,v[i]/v[i-1]*100)):'—', per=i&&v[i-1]>0?pc(Math.max(0,(1-v[i]/v[i-1])*100)):'—';
+      var largura=topo>0?Math.max(2,v[i]/topo*100):0;
+      html+='<tr'+(i===piorI&&pior>0?' class="pior-linha"':'')+'><td>'+PAGINAS[i][1]+'<div class="barra"><i style="width:'+largura+'%"></i></div></td><td>'+v[i]+'</td><td>'+passou+'</td><td class="perda'+(i===piorI&&pior>0?' pior':'')+'">'+per+'</td></tr>';
+    }
+    corpo.innerHTML=html;
+    var fim=v[v.length-1], comprar=topo>0?pc(fim/topo*100):'—';
+    document.getElementById('resumo').innerHTML=
+      '<div class="res"><b>'+topo+'</b><span>pessoas viram a página</span></div>'+
+      '<div class="res"><b>'+(v[10]||0)+'</b><span>chegaram ao resultado</span></div>'+
+      '<div class="res"><b>'+comprar+'</b><span>clicaram em comprar ('+fim+')</span></div>';
+    document.getElementById('sub').textContent=piorI>0&&pior>0?'Maior perda: '+PAGINAS[piorI][1].split(' — ')[0]+' ('+pc(pior*100)+' das pessoas da página anterior não chegaram aqui). Atualizado às '+new Date().toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'})+'.':'Atualizado às '+new Date().toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'})+'.';
+  }).catch(function(){
+    document.getElementById('sub').textContent='Sem dados.';
+    var e=document.getElementById('erro'); e.hidden=false; e.textContent='Não foi possível carregar os números agora. Tente atualizar daqui a pouco.';
+  });
+}
+document.getElementById('atualizar').addEventListener('click',carregar);
+carregar();
+</script>
+</body>
+</html>

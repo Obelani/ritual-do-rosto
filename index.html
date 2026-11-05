@@ -133,7 +133,13 @@ let i=0,ans=[];const $=id=>document.getElementById(id);
 /* Acompanhamento do quiz (Sentinel): eventos «custom» com nome e props simples, sem texto livre nem dados pessoais.
    tk = envia sempre; tkU = envia 1 vez por visita (para contar quantos chegam a cada passo). */
 const tk=(n,p)=>{try{window.sentinel&&window.sentinel('track',n,p)}catch(e){}};
-const vistoTk={};const tkU=(n,p)=>{if(vistoTk[n])return;vistoTk[n]=1;tk(n,p)};
+/* Contagem simples por página do quiz, para o relatório em /relatorio/ (pessoas únicas por navegador).
+   Não envia dados pessoais: só incrementa um contador por etapa. Sem contagem em localhost nem com ?teste=1. */
+const RR_NS=(location.search.match(/[?&]ns=([\w-]+)/)||[])[1]||'rr-13ececb554c1';
+const RR_MAP={quiz_inicio:'p02',quiz_resultado:'p11',vsl_play:'p12',oferta_revelada:'p13'};for(let n=1;n<=8;n++)RR_MAP['quiz_pergunta_'+n]='p'+String(n+2).padStart(2,'0');
+const cont=k=>{try{if(!k||/[?&]teste=1/.test(location.search))return;if(location.hostname==='localhost'&&!/[?&]contar=1/.test(location.search))return;const c='rrc_'+k;if(localStorage.getItem(c))return;localStorage.setItem(c,'1');new Image().src='https://abacus.jasoncameron.dev/hit/'+RR_NS+'/'+k}catch(e){}};
+const vistoTk={};const tkU=(n,p)=>{if(vistoTk[n])return;vistoTk[n]=1;tk(n,p);cont(RR_MAP[n])};
+cont('p01');document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('a.cta'))cont('p14')},true);
 function go(id){document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('show','on')});const s=$(id);s.classList.add('on');requestAnimationFrame(()=>requestAnimationFrame(()=>s.classList.add('show')));scrollTo({top:0,behavior:'smooth'})}
 function start(){i=0;ans=[];tkU('quiz_inicio');go('s-q');render()}
 function render(){const q=Q[i];tkU('quiz_pergunta_'+(i+1),{pergunta:i+1});$('bar').style.width=(i/Q.length*100)+'%';$('count').textContent=(i+1)+'/'+Q.length;$('back').hidden=false;$('micro').textContent=i?Q[i-1].m:'';
