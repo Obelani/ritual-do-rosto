@@ -130,24 +130,28 @@ const P={A:{n:'Rosto Cansado',img:'perfil-rosto-cansado',c:'Disseste que ao espe
 B:{n:'Contorno a Definir',img:'perfil-contorno-a-definir',c:'Disseste que reparas em «{1}», que o que mais te incomoda hoje é «{5}», que nas fotos «{4}» e que já experimentaste «{6}». Procuras «{8}».',d:'O teu perfil é Contorno a Definir. Já investiste em cremes ou pensaste em procedimentos, mas falta-te a parte que ninguém treina: os músculos do rosto e do pescoço. Treinas o corpo; o rosto também merece.',p:['<b>Dias 1–7:</b> aprender os gestos e a postura do pescoço','<b>Dias 8–14:</b> rotina de pescoço e queixo + ginástica facial guiada','<b>Dias 15–21:</b> sequência completa com Gua Sha (opcional) + planner de evolução']},
 C:{n:'Prevenção Ativa',img:'perfil-prevencao-ativa',c:'Disseste que a tua manhã é «{2}», que passas «{3}» minutos ao espelho, que o que mais te incomoda hoje é «{5}» e que queres «{8}».',d:'O teu perfil é Prevenção Ativa. Gostas de ti e queres continuar assim, com naturalidade. Os minutos que já passas ao espelho podem tornar-se o teu ritual de cuidado.',p:['<b>Dias 1–7:</b> ritual base de 10 min ligado ao teu skincare','<b>Dias 8–14:</b> ginástica facial + guia Gua Sha','<b>Dias 15–21:</b> ritual personalizado + planner de evolução']}};
 let i=0,ans=[];const $=id=>document.getElementById(id);
+/* Acompanhamento do quiz (Sentinel): eventos «custom» com nome e props simples, sem texto livre nem dados pessoais.
+   tk = envia sempre; tkU = envia 1 vez por visita (para contar quantos chegam a cada passo). */
+const tk=(n,p)=>{try{window.sentinel&&window.sentinel('track',n,p)}catch(e){}};
+const vistoTk={};const tkU=(n,p)=>{if(vistoTk[n])return;vistoTk[n]=1;tk(n,p)};
 function go(id){document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('show','on')});const s=$(id);s.classList.add('on');requestAnimationFrame(()=>requestAnimationFrame(()=>s.classList.add('show')));scrollTo({top:0,behavior:'smooth'})}
-function start(){i=0;ans=[];go('s-q');render()}
-function render(){const q=Q[i];$('bar').style.width=(i/Q.length*100)+'%';$('count').textContent=(i+1)+'/'+Q.length;$('back').hidden=false;$('micro').textContent=i?Q[i-1].m:'';
+function start(){i=0;ans=[];tkU('quiz_inicio');go('s-q');render()}
+function render(){const q=Q[i];tkU('quiz_pergunta_'+(i+1),{pergunta:i+1});$('bar').style.width=(i/Q.length*100)+'%';$('count').textContent=(i+1)+'/'+Q.length;$('back').hidden=false;$('micro').textContent=i?Q[i-1].m:'';
 const b=$('qbody');b.style.opacity=0;setTimeout(()=>{b.innerHTML=(q.img?`<img class="qimg" src="img/${q.img}.webp" alt="">`:`<div class="qicon">${q.icon}</div>`)+`<h2>${q.q}</h2>`+(q.grid?'<div class="grid">':'')+q.o.map((o,k)=>`<button class="opt${ans[i]===k?' sel':''}" onclick="pick(${k},this)">${q.grid?`<img src="img/${o[0]}.webp?v=2" alt="${o[1]}" loading="lazy"><div><b>${o[1]}</b><small>${o[3]}</small></div>`:`<span>${o[0]}</span>${o[1]}`}</button>`).join('')+(q.grid?'</div>':'');b.style.transition='opacity .35s';b.style.opacity=1},150)}
-function pick(k,el){ans[i]=k;el.classList.add('sel');$('bar').style.width=((i+1)/Q.length*100)+'%';setTimeout(()=>{if(++i<Q.length)render();else load()},380)}
+function pick(k,el){tk('quiz_resposta',{pergunta:i+1,opcao:k+1});ans[i]=k;el.classList.add('sel');$('bar').style.width=((i+1)/Q.length*100)+'%';setTimeout(()=>{if(++i<Q.length)render();else load()},380)}
 function back(){if(i>0){i--;render()}else go('s-start')}
-function load(){$('micro').textContent=Q[7].m;go('s-load');const li=$('steps').children;[...li].forEach(l=>l.classList.remove('ok'));[0,1,2].forEach(n=>setTimeout(()=>li[n].classList.add('ok'),600+n*800));setTimeout(result,3200)}
+function load(){tkU('quiz_analise');$('micro').textContent=Q[7].m;go('s-load');const li=$('steps').children;[...li].forEach(l=>l.classList.remove('ok'));[0,1,2].forEach(n=>setTimeout(()=>li[n].classList.add('ok'),600+n*800));setTimeout(result,3200)}
 function result(){const c={A:0,B:0,C:0};ans.forEach((k,n)=>c[Q[n].o[k][2]]++);let r;const{A,B,C}=c;
 if(A>B&&A>C)r='A';else if(B>A&&B>C)r='B';else if(C>A&&C>B)r='C';else if(A===B)r='A';else if(B===C)r='B';else r='C';
 const p=P[r],t=n=>{const o=Q[n-1].o[ans[n-1]];return o[1].toLowerCase()};
 $('pname').textContent=p.n;$('pimg').src='img/'+p.img+'.webp';$('pimg').alt='Perfil '+p.n;$('pconf').textContent=p.c.replace(/\{(\d)\}/g,(_,n)=>t(+n));$('pdesc').textContent=p.d;$('pplan').innerHTML=p.p.map(x=>'<li>'+x+'</li>').join('');
-go('s-res');armVsl();/* META PIXEL: fbq('track','CompleteRegistration',{content_name:p.n}); */}
+tkU('quiz_resultado',{perfil:r});go('s-res');armVsl();/* META PIXEL: fbq('track','CompleteRegistration',{content_name:p.n}); */}
 
 /* Revelação da oferta: o player tynk não envia postMessage ao parent, por isso o timer de 156s começa no 1.º clique no iframe (blur + activeElement). Sem fallback: só começa depois do play. ?skip=1 revela já. */
 const RV=window.__REVEAL_MS||156000;let rvT=0,fbT=0;
-function reveal(){const g=$('gated');if(!g||g.classList.contains('vis'))return;g.hidden=false;g.style.display='block';void g.offsetWidth;setTimeout(()=>g.classList.add('vis'),30);clearTimeout(rvT);clearTimeout(fbT)}
+function reveal(){const g=$('gated');if(!g||g.classList.contains('vis'))return;tkU('oferta_revelada');g.hidden=false;g.style.display='block';void g.offsetWidth;setTimeout(()=>g.classList.add('vis'),30);clearTimeout(rvT);clearTimeout(fbT)}
 /* Timer ativo: o botão e o resto aparecem 156 s depois do play. Para testar sem esperar, pôr true (ou abrir com ?skip=1). */
 const TESTE_SEM_TIMER=false;
 function armVsl(){if(TESTE_SEM_TIMER||new URLSearchParams(location.search).get('skip')==='1'){reveal();return}
-const f=$('vslframe');window.addEventListener('blur',()=>{setTimeout(()=>{if(document.activeElement===f&&!rvT)rvT=setTimeout(reveal,RV)},0)});}
+const f=$('vslframe');window.addEventListener('blur',()=>{setTimeout(()=>{if(document.activeElement===f&&!rvT){tkU('vsl_play');rvT=setTimeout(reveal,RV)}},0)});}
 </script></body></html>
